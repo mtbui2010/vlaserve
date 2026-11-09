@@ -2,6 +2,7 @@
 name = "vlaserve"
 version = "0.1.0"
 description = "Serve trained Vision-Language-Action policies locally with one command."
+readme = "PYPI.md"
 requires-python = ">=3.10"  # client; [server] needs 3.12 (LeRobot 0.6.1 requires it)
 license = "Apache-2.0"
 # The base install is the robot-side client: no torch, no LeRobot, a few MB. It covers
@@ -24,6 +25,11 @@ server = [
 ]
 onnx = ["onnxruntime-gpu"]
 test = ["pytest", "lerobot[async]==0.6.1"]  # async: the LeRobot policy server used as parity reference
+
+[project.urls]
+Documentation = "https://mtbui2010.github.io/vlaserve/"
+Source = "https://github.com/mtbui2010/vlaserve"
+"Container image" = "https://hub.docker.com/r/mtbui2010/vlaserve"
 
 [project.scripts]
 vlaserve = "vlaserve.cli:main"

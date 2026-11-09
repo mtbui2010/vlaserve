@@ -4,13 +4,27 @@ The server needs PyTorch, CUDA libraries and LeRobot: about 8.5 GB that must mat
 the GPU driver. The container ships that combination already tested, so the host only needs
 Docker and an NVIDIA driver.
 
-## Build
+## Get the image
 
 ```bash
-make docker                          # → vlaserve:gpu-cu128
+docker pull mtbui2010/vlaserve:latest        # from Docker Hub (≈ 8.5 GB)
+```
+
+| tag | what |
+|---|---|
+| `latest`, `gpu-cu128` | newest release, CUDA 12.8 build |
+| `vX.Y.Z`, `vX.Y.Z-gpu-cu128` | a fixed release — pin this in production |
+
+Or build it from source:
+
+```bash
+make docker                          # → vlaserve:gpu-cu128 (local)
 make docker TORCH_CUDA=cu126         # host driver older than 570
 make docker-test                     # fast tests inside the image
 ```
+
+`make docker-run` uses the local build; add `IMAGE=mtbui2010/vlaserve:latest` to run the
+published one.
 
 The image uses `python:3.12-slim` as base, not `nvidia/cuda`: the CUDA and cuDNN libraries come
 inside the torch wheel, and the driver is injected by the NVIDIA runtime at `docker run`.
@@ -28,7 +42,7 @@ which runs, for example:
 docker run -d --name vlaserve --gpus '"device=3"' -p 127.0.0.1:11450:11450 \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
   -v /mnt/nas/lerobot_shared/kaair_sim/checkpoints:/ckpt:ro \
-  vlaserve:gpu-cu128 serve --host 0.0.0.0 \
+  mtbui2010/vlaserve:latest serve --host 0.0.0.0 \
   /ckpt/smolvla_open_drawer_500_20260924/checkpoints/020000/pretrained_model
 ```
 
@@ -64,12 +78,31 @@ make docker-stop
 
 ## Another machine
 
-No registry is published yet. Copy the image by hand:
+`docker pull mtbui2010/vlaserve:latest`. Without internet access, copy the image by hand:
 
 ```bash
 make docker-save                           # → vlaserve-gpu-cu128.tar.gz
 docker load < vlaserve-gpu-cu128.tar.gz   # on the other machine
 ```
+
+## Publishing a new version (maintainers)
+
+```bash
+docker login                               # once
+make push-docker-next-version
+```
+
+Reads the newest `vX.Y.Z` tag on Docker Hub, bumps the patch number (the first release uses the
+version in `pyproject.toml`), writes it into `pyproject.toml` and `vlaserve/__init__.py`, builds
+the image with that version as a label, runs the tests inside it — a failure stops before
+anything is pushed — and pushes `vX.Y.Z`, `vX.Y.Z-gpu-cu128`, `gpu-cu128` and `latest`. Commit
+the version bump afterwards. `make push-docker PUSH_VERSION=vX.Y.Z` pushes an image you already
+built; `make push-docker-readme DOCKERHUB_TOKEN=…` publishes `deploy/README.md` as the Docker Hub
+overview.
+
+The client package goes to PyPI the same way: `make push-pypi-next-version PYPI_TOKEN=pypi-…`
+(next version from PyPI, build, `twine check`, install the wheel into a fresh venv and check it
+imports without torch, then upload). `make pypi` does everything except the upload.
 
 ## Verify an image end to end
 

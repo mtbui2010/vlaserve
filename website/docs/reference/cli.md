@@ -26,6 +26,8 @@ file), `CUDA_VISIBLE_DEVICES`.
 | running server | `health`, `ps`, `load`, `rm`, `reset` | `MODEL`, `URL` |
 | tests | `test`, `test-gpu` | `GPU`, `HF_CACHE` |
 | container | `docker`, `docker-run`, `docker-logs`, `docker-stop`, `docker-shell`, `docker-test`, `docker-test-gpu`, `docker-save` | `IMAGE`, `CONTAINER`, `MODEL`, `GPU`, `CKPT_ROOT`, `OFFLINE` |
+| Docker Hub | `push-docker-next-version`, `push-docker`, `push-docker-readme` | `HUB_REPO`, `PUSH_VERSION`, `DOCKERHUB_TOKEN` |
+| PyPI | `pypi` (build + smoke test, no upload), `push-pypi-next-version` | `PYPI_TOKEN`, `PYPI_REPO=testpypi` |
 | simulation | `kaair-eval` | `KAAIR_CKPT`, `N`, `TAG` |
 | misc | `clean`, `help` | — |
 

@@ -5,11 +5,19 @@ only the client (`pip install vlaserve`, ~80 MB, no torch) and talks HTTP to it.
 
 ```
 robot PC                           GPU box / Jetson
-pip install vlaserve      HTTP    docker run vlaserve:gpu-cu128
+pip install vlaserve      HTTP    docker run mtbui2010/vlaserve
 PolicyClient, ChunkExecutor  ──►   serve <model>       ◄── HF cache / checkpoint dir (mounted)
 ```
 
-## Build
+## Get it
+
+```bash
+docker pull mtbui2010/vlaserve:latest     # Docker Hub; tags: latest, gpu-cu128, vX.Y.Z, vX.Y.Z-gpu-cu128
+```
+
+Documentation: https://mtbui2010.github.io/vlaserve/ · source: https://github.com/mtbui2010/vlaserve
+
+## Build from source
 
 ```bash
 docker build -f deploy/Dockerfile -t vlaserve:gpu-cu128 .
@@ -23,14 +31,14 @@ docker build -f deploy/Dockerfile --build-arg TORCH_CUDA=cu126 -t vlaserve:gpu-c
 # A model from the HF cache (the same cache LeRobot and huggingface-cli use)
 docker run -d --gpus all -p 11450:11450 \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
-  --name vlaserve vlaserve:gpu-cu128 \
+  --name vlaserve mtbui2010/vlaserve:latest \
   serve --host 0.0.0.0 pi05-libero
 
 # A local training output: mount it and serve the path
 docker run -d --gpus all -p 11450:11450 \
   -v /data/runs/my_run/checkpoints/last/pretrained_model:/models/my_run:ro \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
-  vlaserve:gpu-cu128 serve --host 0.0.0.0 /models/my_run
+  mtbui2010/vlaserve:latest serve --host 0.0.0.0 /models/my_run
 ```
 
 - **The HF cache mount is needed even for local checkpoints:** the tokenizer (e.g.
@@ -52,7 +60,7 @@ Your own aliases: mount a registry file and point to it,
 ```bash
 docker run --rm --gpus '"device=3"' -e HF_HUB_OFFLINE=1 \
   -v /mnt/nas/huggingface:/root/.cache/huggingface \
-  --entrypoint python vlaserve:gpu-cu128 -m pytest -m gpu -q tests/test_gpu_parity.py
+  --entrypoint python mtbui2010/vlaserve:latest -m pytest -m gpu -q tests/test_gpu_parity.py
 ```
 
 ## Not done yet

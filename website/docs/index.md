@@ -42,7 +42,7 @@ voice-over with subtitles; every terminal output is real.
 docker run -d --gpus all -p 127.0.0.1:11450:11450 \
   -v ~/.cache/huggingface:/root/.cache/huggingface \
   -v /data/runs:/ckpt:ro \
-  vlaserve:gpu-cu128 serve --host 0.0.0.0 /ckpt/my_run/checkpoints/last/pretrained_model
+  mtbui2010/vlaserve:latest serve --host 0.0.0.0 /ckpt/my_run/checkpoints/last/pretrained_model
 ```
 
 ```python

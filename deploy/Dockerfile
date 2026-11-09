@@ -16,6 +16,7 @@ FROM python:3.12-slim-bookworm
 ARG TORCH_CUDA=cu128
 ARG TORCH_VERSION=2.10.0
 ARG TORCHVISION_VERSION=0.25.0
+ARG VERSION=dev
 
 ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
@@ -41,6 +42,12 @@ RUN pip install -c /etc/pip-constraints.txt ".[server,test]" \
  && python -c "import torch; assert torch.__version__.startswith('${TORCH_VERSION}'), torch.__version__" \
  && python -c "import lerobot.policies.pi05, lerobot.policies.smolvla, vlaserve.server" \
  && vlaserve list > /dev/null
+
+LABEL org.opencontainers.image.title="vlaserve" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.source="https://github.com/mtbui2010/vlaserve" \
+      org.opencontainers.image.documentation="https://mtbui2010.github.io/vlaserve/" \
+      org.opencontainers.image.licenses="Apache-2.0"
 
 VOLUME ["/root/.cache/huggingface"]
 EXPOSE 11450

@@ -22,8 +22,9 @@ They can also be the same computer: then the URL is `http://127.0.0.1:11450`.
 === "Container (recommended)"
 
     ```bash
-    git clone https://github.com/mtbui2010/vlaserve && cd vlaserve
-    make docker                      # builds vlaserve:gpu-cu128 (≈ 8.5 GB)
+    docker pull mtbui2010/vlaserve:latest      # ≈ 8.5 GB, from Docker Hub
+    # or build it yourself:
+    git clone https://github.com/mtbui2010/vlaserve && cd vlaserve && make docker
     ```
 
     Needs Docker with the NVIDIA container toolkit, and an NVIDIA driver that supports
