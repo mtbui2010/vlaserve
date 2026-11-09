@@ -1,0 +1,8 @@
+{
+  "package": "vlaserve",
+  "layers": [
+    {"name": "engine", "paths": ["vlaserve/spec.py", "vlaserve/registry.py", "vlaserve/codec.py", "vlaserve/errors.py", "vlaserve/imaging.py", "vlaserve/profiles.py"], "may_import": []},
+    {"name": "backends", "paths": ["vlaserve/backends"], "may_import": ["engine"], "no_cross": true}
+  ],
+  "size": {"paths": ["vlaserve"], "max_function_lines": 80, "max_file_lines": 1200, "baseline": ".dev-principles.baseline.json"}
+}
